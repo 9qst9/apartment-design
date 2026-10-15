@@ -1,0 +1,6 @@
+.DS_Store
+*.blend
+*.blend1
+archive/
+renders/preview_*
+renders/walk/
