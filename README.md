@@ -45,6 +45,8 @@ ceiling, with LEDs under the cupboards.
 - **Bed:** [Rroots Kyoto King Size](https://rroots.rs/krevet-kyoto-kingsize) 160×200 in natural oak, modelled from the
   maker's AR model.
   - The head is on the solid south wall.
+  - The bed is 168.5 cm wide overall: a 4 cm solid-oak frame on each side of the mattress. Rroots doesn't list this,
+    so confirm it before ordering.
   - There are no nightstands: a hidden shelf behind the headboard and two wall lanterns replace them.
 - **Wardrobe:** floor-to-ceiling, 230×60, with fluted-glass sliding doors in the niche by the door.
 - **Office:** beside the bed at the window. The window is to the side of the screen, so there is no glare on the
@@ -61,6 +63,24 @@ ceiling, with LEDs under the cupboards.
 - **Office wall:** the oak slat panel is split around a black brick bay with a preserved-moss panel and warm LED seams.
   The bricks wrap onto the window pier, which has three oak shelves.
 
+### Alternative: Kyoto 140×200
+The same bed one size down (`--bed=140`). It stays against the desk, so all 20 cm go to the wardrobe walkway.
+
+|          | 160×200 (current)                         | 140×200                                          |
+|----------|-------------------------------------------|--------------------------------------------------|
+| Isometric | ![isometric 160](renders/render_isometric.png) | ![isometric 140](renders/render_isometric_bed140.png) |
+| Bedroom  | ![bedroom 160](renders/render_bedroom.png) | ![bedroom 140](renders/render_bedroom_bed140.png) |
+| Office   | ![office 160](renders/render_bedroom_office.png) | ![office 140](renders/render_bedroom_office_bed140.png) |
+| Plan     | ![plan 160](renders/render_topdown.png)    | ![plan 140](renders/render_topdown_bed140.png)    |
+
+| | 160×200 | 140×200 |
+|---|---|---|
+| Frame, outside | 168.5 cm | 148.5 cm |
+| Walkway in front of the wardrobe | 29.5 cm (sideways) | 49.5 cm |
+| Wardrobe drawers | open 82% | open fully |
+| Width per person, for two | 80 cm | 70 cm |
+| Price, natural oak (Oct 2026) | 113,000 RSD | 99,000 RSD |
+
 ### Key dimensions
 | Item                 | Size |
 |----------------------|------|
@@ -72,7 +92,7 @@ ceiling, with LEDs under the cupboards.
 
 ### Assumptions / open questions
 - **Ceiling height:** 2.85 m is assumed from sales listings. Confirm it on site.
-- **Wardrobe walkway:** 29.5 cm is tight. A Kyoto 140 would give 49.5 cm.
+- **Wardrobe walkway:** 29.5 cm is tight. A Kyoto 140 gives 49.5 cm (see the alternative above).
 - **Radiators:** positions come from the developer's floor plan.
 
 ## Rendering
@@ -93,6 +113,8 @@ $B -b --factory-startup -P apartment.py -- --night      # add to any of the abov
 | `--top`     | Plan view, oriented like the floor plan. |
 | `--views`   | Eye-level perspective shots, 2400×1600, with full-height walls and a ceiling. |
 | `--night`   | Blue hour, warm lamps and LEDs on. Writes `*_night.png`. |
+| `--bed=140` | Kyoto 140×200 instead of the 160. Writes `*_bed140.png`. |
+| `--only=…`  | Render only the shots whose names contain this text, e.g. `--views --only=bedroom`. |
 | `--preview` | 1200 px at 48 samples, written as `renders/preview_*`. All views take about 40 s. |
 | `--walk`    | Eye-level walkthrough frames plus an MP4, made with Blender's bundled FFmpeg. Takes about 4 h at 1080p. |
 

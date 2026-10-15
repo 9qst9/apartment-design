@@ -6,6 +6,7 @@ Run:  blender -b -P apartment.py            (final, 2400x2000)
       blender -b -P apartment.py -- --views    (eye-level: TV wall, living length, bedroom, office, dining, entrance)
       blender -b -P apartment.py -- --walk     (eye-level walkthrough -> walk/ frames -> walkthrough.mp4)
       add --night to any of these: blue hour, warm lamps + LEDs on, writes *_night.png
+      add --bed=140 for a Kyoto 140 x 200 instead of the 160 (writes *_bed140.png); --only=bedroom renders a subset
 Images go to renders/ (preview_* with --preview); the default run also saves apartment.blend.
 Coords in metres from the floor plan: X = north (plan right), Y = west (plan up,
 windows), Z = up. Far walls (west facade + north wall) are full height, the rest
@@ -19,6 +20,9 @@ TOP = "--top" in sys.argv
 WALK = "--walk" in sys.argv
 VIEWS = "--views" in sys.argv or WALK  # full-height walls + ceiling
 NIGHT = "--night" in sys.argv
+OPT = dict(a[2:].split("=", 1) for a in sys.argv if a.startswith("--") and "=" in a)   # --bed=140, --only=bedroom
+BED = int(OPT.get("bed", 160))  # Kyoto mattress width, cm
+SUF = (f"_bed{BED}" if BED != 160 else "") + ("_night" if NIGHT else "")   # output name suffix
 OUT = os.path.dirname(os.path.abspath(__file__))
 REN = os.path.join(OUT, "renders")
 os.makedirs(REN, exist_ok=True)
@@ -762,7 +766,8 @@ plant(1.45, 3.6, 0.6, 0.12, 0.35, pot_r=0.09, n=5)
 
 # ---------- bedroom ----------
 # Original orientation, no nightstands: bed head + desk side by side on the solid south wall, desk at the window.
-# 3.8 m = wardrobe 60 + walkway 29.5 + Kyoto 168.5 + gap 2 + desk 120. Sliding doors; drawers still pull out 82%+.
+# 3.8 m = wardrobe 60 + walkway + Kyoto (mattress + 8.5) + gap 2 + desk 120: the walkway is 29.5 cm with the 160
+# (sliding doors; drawers still pull out 82%), 49.5 cm with --bed=140 (drawers pull out fully).
 # The chair sits in the 1.2 m strip between the bed and the window, so the 80 cm MITTZON fits without a squeeze.
 B(0.8, 2.6, 4.70, 6.85, 0, 0.012, wool)
 # floor-to-ceiling wardrobe 230 x 60: oak carcass, 3 sliding fluted-glass doors in black frames, LED-lit
@@ -797,31 +802,35 @@ for x0, yd in ((0.02, 4.57), (0.765, 4.545), (1.51, 4.57)):      # doors on two 
               (x0, x1, 0.07, 0.09), (x0, x1, H - 0.09, H - 0.07)):
         Bc(a[0], a[1], yd, yd + 0.02, a[2], a[3], black)
     Bc(x0 + 0.02, x1 - 0.02, yd + 0.007, yd + 0.013, 0.09, H - 0.09, fluted_glass)
-# Rroots Kyoto King Size 160 x 200, natural oak, measured off the maker's AR model: 168.5 x 221 cm overall.
-# 40 mm solid frame (rails 19.5-33 cm) floating on recessed legs, slats at 29 cm, 115 cm headboard leaning back 4.6°
-# on two side boards, with a 7 cm shelf hidden behind its top edge (phone, book, glass of water: no nightstands).
-KY0, KY1 = 4.895, 6.58                                         # 2 cm off the desk end
+# Rroots Kyoto King Size, natural oak, measured off the maker's AR model of the 160 x 200: 168.5 x 221 cm overall, i.e.
+# a 4 cm solid-oak frame round a 160.5 cm opening (other sizes assumed built the same). The frame (19.5-33 cm high)
+# floats on recessed legs, slats at 29 cm, 115 cm headboard leaning back 4.6° on two side boards, with a 7 cm shelf
+# hidden behind its top edge (phone, book, glass of water: no nightstands).
+KW = BED / 200 + 0.0425                                        # half the frame's outside width
+KY1 = 6.58                                                     # 2 cm off the desk end
+KY0 = KY1 - 2 * KW
 yc = (KY0 + KY1) / 2
 for y0 in (KY0, KY1 - 0.04):
-    B(0.137, 2.223, y0, y0 + 0.04, 0.195, 0.328, oak, 0.01)    # side rails, rounded corners
+    B(0.137, 2.223, y0, y0 + 0.04, 0.195, 0.328, oak, 0.01)    # long sides of the frame, rounded corners
 for x0 in (0.137, 2.183):
-    B(x0, x0 + 0.04, KY0 + 0.04, KY1 - 0.04, 0.195, 0.328, oak, 0.01)   # head + foot rails
+    B(x0, x0 + 0.04, KY0 + 0.04, KY1 - 0.04, 0.195, 0.328, oak, 0.01)   # head + foot ends
 B(0.177, 2.183, KY0 + 0.04, KY1 - 0.04, 0.27, 0.289, oak)      # slats
-for x, y, h in ((0.498, yc - 0.5825, 0.04), (0.498, yc + 0.5825, 0.04), (1.864, yc - 0.5825, 0.04),
-                (1.864, yc + 0.5825, 0.04), (0.659, yc, 0.02), (1.141, yc, 0.02), (1.703, yc, 0.02)):
+for x, y, h in ((0.498, yc - KW + 0.26, 0.04), (0.498, yc + KW - 0.26, 0.04), (1.864, yc - KW + 0.26, 0.04),
+                (1.864, yc + KW - 0.26, 0.04), (0.659, yc, 0.02), (1.141, yc, 0.02), (1.703, yc, 0.02)):
     B(x - h, x + h, y - h, y + h, 0, 0.195, oak, 0.004)        # recessed legs
 B(0.1027, 0.1217, KY0, KY1, 0.329, 1.149, oak, 0.004, rot=(0, -0.0803, 0))   # leaning headboard, top at 115
-for y0 in (yc - 0.7435, yc + 0.7255):                          # side boards carrying it, 18 mm
+for y0 in (yc - KW + 0.099, yc + KW - 0.117):                  # side boards carrying it, 18 mm
     B(0.01, 0.131, y0, y0 + 0.018, 0, 0.33, oak)
     B(0.01, 0.076, y0, y0 + 0.018, 0.33, 1.07, oak)
-B(0.01, 0.079, yc - 0.8025, yc + 0.8025, 1.07, 1.089, oak, 0.003)   # hidden shelf, 6 cm below the top edge
+B(0.01, 0.079, yc - KW + 0.04, yc + KW - 0.04, 1.07, 1.089, oak, 0.003)   # hidden shelf, 6 cm below the top edge
 B(0.18, 2.18, KY0 + 0.045, KY1 - 0.045, 0.289, 0.54, linen_w, 0.04, True)   # 25 cm mattress
 B(0.75, 2.20, KY0 + 0.04, KY1 - 0.04, 0.50, 0.60, linen, 0.05, True)        # duvet
 B(1.80, 2.22, KY0 + 0.03, KY1 - 0.03, 0.58, 0.62, clay, 0.02, True)         # throw
-for y0 in (yc - 0.75, yc + 0.05):
-    B(0.19, 0.63, y0, y0 + 0.7, 0.54, 0.69, linen_w, 0.06, True)   # pillows
+pw = BED / 200 - 0.1                                           # 70 cm pillows on the 160, 60 on the 140
+for y0 in (yc - 0.05 - pw, yc + 0.05):
+    B(0.19, 0.63, y0, y0 + pw, 0.54, 0.69, linen_w, 0.06, True)   # pillows
 B(0.48, 0.65, yc - 0.25, yc + 0.25, 0.57, 0.80, sage, 0.06, True, (0, 0.3, 0))
-for y in (yc - 0.70, yc + 0.70):                               # reading lanterns, 30 cm above the headboard
+for y in (yc - KW + 0.1425, yc + KW - 0.1425):                 # reading lanterns, 30 cm above the headboard
     B(0.0, 0.05, y - 0.012, y + 0.012, 1.43, 1.47, black)
     lantern(0.12, y, 1.45, 0.07, watts=5, k=1800)
 # office: IKEA MITTZON 120 x 80 (walnut veneer, white frame, top at 75 cm) + Herman Miller Mirra 2, beside the bed
@@ -1002,21 +1011,23 @@ if VIEWS:
         r.use_persistent_data = True  # only the camera moves between frames
         step = FPS if PREVIEW else 1
         shots = {f"walk/{f:04d}": walk(f / FPS) for f in range(0, round(KEYS[-1][0] * FPS) + 1, step)}
-elif not (PREVIEW or TOP or NIGHT):
+elif not (PREVIEW or TOP or NIGHT or BED != 160):
     bpy.context.preferences.filepaths.save_version = 0  # no apartment.blend1 backups
     bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT, "apartment.blend"))
+if "only" in OPT:  # e.g. --only=bedroom renders render_bedroom + render_bedroom_office
+    shots = {k: v for k, v in shots.items() if any(s in k for s in OPT["only"].split(","))}
 for name, pose in shots.items():
     if pose:
         cam.location = pose[0]
         cam.rotation_euler = (Vector(pose[1]) - Vector(pose[0])).to_track_quat("-Z", "Y").to_euler()
-    r.filepath = os.path.join(REN, ("preview_" if PREVIEW else "") + name + ("_night" if NIGHT else "") + ".png")
+    r.filepath = os.path.join(REN, ("preview_" if PREVIEW else "") + name + SUF + ".png")
     if WALK and os.path.exists(r.filepath):
         continue
     bpy.ops.render.render(write_still=True)
     print("saved", r.filepath)
 if WALK:  # encode with Blender's bundled FFmpeg (no system ffmpeg on this Mac)
     wd = os.path.join(REN, ("preview_" if PREVIEW else "") + "walk")
-    frames = sorted(f for f in os.listdir(wd) if f.endswith(".png") and f.endswith("_night.png") == NIGHT)
+    frames = sorted(f for f in os.listdir(wd) if f[4:] == SUF + ".png")   # 0123.png, 0123_night.png, 0123_bed140.png
     ed = bpy.data.scenes.new("edit")
     ed.view_settings.view_transform = "Standard"  # frames are already AgX-graded
     st = ed.sequence_editor_create().strips.new_image("walk", os.path.join(wd, frames[0]), 1, 1)
@@ -1026,6 +1037,6 @@ if WALK:  # encode with Blender's bundled FFmpeg (no system ffmpeg on this Mac)
     ed.frame_end, er.fps, er.resolution_x, er.resolution_y = len(frames), FPS // step, r.resolution_x, r.resolution_y
     er.image_settings.media_type, er.image_settings.file_format = "VIDEO", "FFMPEG"
     er.ffmpeg.format, er.ffmpeg.codec, er.ffmpeg.constant_rate_factor = "MPEG4", "H264", "HIGH"
-    er.filepath = os.path.join(REN, ("preview_" if PREVIEW else "") + "walkthrough" + ("_night" if NIGHT else "") + ".mp4")
+    er.filepath = os.path.join(REN, ("preview_" if PREVIEW else "") + "walkthrough" + SUF + ".mp4")
     bpy.ops.render.render(animation=True, scene=ed.name)
     print("saved", er.filepath)
