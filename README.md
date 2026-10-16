@@ -9,6 +9,10 @@ engineer (desk 120×80, Mac mini, one ultrawide monitor).
 
 ## Renders
 
+Day renders use a late-afternoon west sun. Night renders use a blue-hour sky with every light a warm 1800–3000 K source.
+
+### Main design: Kyoto 160×200 bed
+
 |                     | Day                                               | Night                                                     |
 |---------------------|---------------------------------------------------|-----------------------------------------------------------|
 | Isometric cutaway   | ![isometric](renders/render_isometric.png)                 | ![isometric night](renders/render_isometric_night.png)                   |
@@ -20,7 +24,18 @@ engineer (desk 120×80, Mac mini, one ultrawide monitor).
 | Home office         | ![bedroom office](renders/render_bedroom_office.png)            | ![bedroom office night](renders/render_bedroom_office_night.png)              |
 | Entrance            | ![entrance](renders/render_entrance.png)                  | ![entrance night](renders/render_entrance_night.png)                    |
 
-Day renders use a late-afternoon west sun. Night renders use a blue-hour sky with every light a warm 1800–3000 K source.
+### Version with a Kyoto 140×200 bed
+
+Everything else is identical. The TV wall, dining and entrance views don't show the bedroom, so they're the same as
+above. The trade-offs are under [Design](#alternative-kyoto-140200).
+
+|                     | Day                                                      | Night                                                          |
+|---------------------|----------------------------------------------------------|----------------------------------------------------------------|
+| Isometric cutaway   | ![isometric 140](renders/render_isometric_bed140.png)         | ![isometric 140 night](renders/render_isometric_bed140_night.png)         |
+| Plan                | ![topdown 140](renders/render_topdown_bed140.png)             | ![topdown 140 night](renders/render_topdown_bed140_night.png)             |
+| Living room, 5.9 m  | ![living length 140](renders/render_living_length_bed140.png) | ![living length 140 night](renders/render_living_length_bed140_night.png) |
+| Bedroom             | ![bedroom 140](renders/render_bedroom_bed140.png)             | ![bedroom 140 night](renders/render_bedroom_bed140_night.png)             |
+| Home office         | ![office 140](renders/render_bedroom_office_bed140.png)       | ![office 140 night](renders/render_bedroom_office_bed140_night.png)       |
 
 ## Design
 
@@ -65,13 +80,7 @@ ceiling, with LEDs under the cupboards.
 
 ### Alternative: Kyoto 140×200
 The same bed one size down (`--bed=140`). It stays against the desk, so all 20 cm go to the wardrobe walkway.
-
-|          | 160×200 (current)                         | 140×200                                          |
-|----------|-------------------------------------------|--------------------------------------------------|
-| Isometric | ![isometric 160](renders/render_isometric.png) | ![isometric 140](renders/render_isometric_bed140.png) |
-| Bedroom  | ![bedroom 160](renders/render_bedroom.png) | ![bedroom 140](renders/render_bedroom_bed140.png) |
-| Office   | ![office 160](renders/render_bedroom_office.png) | ![office 140](renders/render_bedroom_office_bed140.png) |
-| Plan     | ![plan 160](renders/render_topdown.png)    | ![plan 140](renders/render_topdown_bed140.png)    |
+[Renders of this version](#version-with-a-kyoto-140200-bed) are at the top.
 
 | | 160×200 | 140×200 |
 |---|---|---|
